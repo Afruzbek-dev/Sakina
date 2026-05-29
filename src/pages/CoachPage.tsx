@@ -30,6 +30,13 @@ const insightCards = [
   { text: 'Weekends are your strongest Quran reading days', icon: '📖' },
 ]
 
+const suggestedPrompts = [
+  'How can I improve Fajr?',
+  'Dua for anxiety',
+  'Quran reading plan',
+  'Evening routine',
+]
+
 export default function CoachPage() {
   const [selectedMood, setSelectedMood] = useState<number | null>(null)
   const [showTyping, setShowTyping] = useState(true)
@@ -62,16 +69,27 @@ export default function CoachPage() {
       initial="hidden"
       animate="show"
     >
-      {/* Header */}
-      <motion.div variants={item}>
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-cream-warm">AI Coach</h1>
-          <Sparkles className="w-5 h-5 text-gold-soft" />
-        </div>
-        <p className="text-sm text-white/50 mt-0.5">Your spiritual mentor</p>
+      {/* Premium Coach Avatar */}
+      <motion.div variants={item} className="flex flex-col items-center">
+        <motion.div
+          className="w-16 h-16 rounded-full flex items-center justify-center"
+          style={{
+            background: 'linear-gradient(135deg, #2DD4BF, #8B5CF6)',
+          }}
+          animate={{ scale: [1, 1.05, 1] }}
+          transition={{ duration: 3, ease: 'easeInOut', repeat: Infinity }}
+        >
+          <Sparkles className="w-7 h-7 text-white" />
+        </motion.div>
       </motion.div>
 
-      {/* Daily Check-in */}
+      {/* Header */}
+      <motion.div variants={item} className="text-center">
+        <h1 className="text-2xl font-bold text-cream-warm">AI Coach</h1>
+        <p className="text-[13px] text-white/50 mt-0.5">Your spiritual mentor</p>
+      </motion.div>
+
+      {/* Daily Check-in / Mood Selector */}
       <AnimatePresence>
         {selectedMood === null && (
           <motion.div
@@ -79,7 +97,7 @@ export default function CoachPage() {
             exit={{ opacity: 0, height: 0 }}
             className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5"
           >
-            <p className="text-sm font-medium text-cream-warm mb-4">
+            <p className="text-[16px] font-medium text-cream-warm mb-4">
               How are you feeling today?
             </p>
             <div className="flex justify-between">
@@ -88,10 +106,22 @@ export default function CoachPage() {
                   key={i}
                   whileTap={{ scale: 0.85 }}
                   onClick={() => selectMood(i)}
-                  className="flex flex-col items-center gap-1.5"
+                  className={`flex flex-col items-center gap-1.5 transition-opacity ${
+                    selectedMood !== null && selectedMood !== i ? 'opacity-40' : ''
+                  }`}
                   aria-label={mood.label}
                 >
-                  <span className="text-2xl">{mood.emoji}</span>
+                  <motion.span
+                    className="text-2xl block"
+                    whileHover={{ scale: 1.15 }}
+                    style={
+                      selectedMood === i
+                        ? { boxShadow: '0 0 12px rgba(45, 212, 191, 0.4)' }
+                        : undefined
+                    }
+                  >
+                    {mood.emoji}
+                  </motion.span>
                   <span className="text-[10px] text-white/40">{mood.label}</span>
                 </motion.button>
               ))}
@@ -113,8 +143,13 @@ export default function CoachPage() {
               <Sparkles className="w-3.5 h-3.5 text-emerald-glow" />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="bg-white/5 border border-white/5 rounded-2xl rounded-tl-sm px-4 py-3">
-                <p className="text-sm text-cream-warm/90 leading-relaxed">{msg.text}</p>
+              <div
+                className="rounded-2xl rounded-tl-sm px-5 py-4 border border-white/5"
+                style={{
+                  background: 'linear-gradient(135deg, #182230, #1d2a3a)',
+                }}
+              >
+                <p className="text-[16px] text-cream-warm/90 leading-relaxed">{msg.text}</p>
               </div>
               <p className="text-[10px] text-white/30 mt-1 ml-2">{msg.time}</p>
             </div>
@@ -127,20 +162,25 @@ export default function CoachPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, transition: { duration: 0.3, ease: 'easeInOut' } }}
               className="flex gap-3"
             >
               <div className="w-7 h-7 rounded-full bg-emerald-glow/20 flex items-center justify-center flex-shrink-0 mt-1">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-glow" />
               </div>
-              <div className="bg-white/5 border border-white/5 rounded-2xl rounded-tl-sm px-4 py-3">
-                <div className="flex gap-1">
+              <div
+                className="rounded-2xl rounded-tl-sm px-5 py-4 border border-white/5"
+                style={{
+                  background: 'linear-gradient(135deg, #182230, #1d2a3a)',
+                }}
+              >
+                <div className="flex gap-1.5 items-center py-1">
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
-                      className="w-2 h-2 rounded-full bg-white/40"
-                      animate={{ y: [0, -6, 0] }}
-                      transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity }}
+                      className="w-[3px] h-[3px] rounded-full bg-white/40"
+                      animate={{ y: [0, -4, 0] }}
+                      transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity, ease: 'easeInOut' }}
                     />
                   ))}
                 </div>
@@ -150,23 +190,46 @@ export default function CoachPage() {
         </AnimatePresence>
       </motion.div>
 
+      {/* Weekly Insight Summary */}
+      <motion.div
+        variants={item}
+        className="bg-[#121923] border border-white/10 rounded-3xl p-5"
+      >
+        <h3 className="text-[13px] font-medium text-white/50 mb-4">Weekly Insight Summary</h3>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="text-center">
+            <p className="text-xl font-bold text-[#2DD4BF]">85%</p>
+            <p className="text-[13px] text-white/50 mt-1">Prayer</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl font-bold text-[#2DD4BF]">92%</p>
+            <p className="text-[13px] text-white/50 mt-1">Quran</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xl font-bold text-[#2DD4BF]">5 days</p>
+            <p className="text-[13px] text-white/50 mt-1">Reflection</p>
+          </div>
+        </div>
+      </motion.div>
+
       {/* Reflection Prompt */}
       <motion.div
         variants={item}
-        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5"
+        className="rounded-2xl p-5 border-l-4 border-l-[#F4C95D]"
+        style={{ backgroundColor: '#182230' }}
       >
         <div className="flex items-center gap-2 mb-2">
           <Lightbulb className="w-4 h-4 text-gold-soft" />
-          <span className="text-xs font-medium text-gold-soft">Today&apos;s Reflection</span>
+          <span className="text-[13px] font-medium text-gold-soft">Today&apos;s Reflection</span>
         </div>
-        <p className="text-sm text-cream-warm/90 leading-relaxed italic">
+        <p className="text-[16px] text-cream-warm/90 leading-relaxed italic">
           &ldquo;What is one thing you can do today that your future self will thank you for?&rdquo;
         </p>
       </motion.div>
 
       {/* Habit Insights */}
       <motion.div variants={item} className="space-y-3">
-        <h3 className="text-sm font-medium text-cream-warm">Habit Insights</h3>
+        <h3 className="text-[13px] font-medium text-cream-warm">Habit Insights</h3>
         {insightCards.map((insight, i) => (
           <motion.div
             key={i}
@@ -174,9 +237,25 @@ export default function CoachPage() {
             className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 flex items-center gap-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
           >
             <span className="text-xl">{insight.icon}</span>
-            <p className="text-xs text-white/70 leading-relaxed">{insight.text}</p>
+            <p className="text-[13px] text-white/70 leading-relaxed">{insight.text}</p>
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* Suggested Prompts */}
+      <motion.div variants={item}>
+        <h3 className="text-[13px] font-medium text-cream-warm mb-3">Suggested Prompts</h3>
+        <div className="overflow-x-auto flex gap-3 pb-2 -mx-1 px-1">
+          {suggestedPrompts.map((prompt, i) => (
+            <button
+              key={i}
+              className="h-[44px] flex-shrink-0 rounded-full border border-white/10 px-[18px] text-[13px] text-white/70 whitespace-nowrap"
+              style={{ backgroundColor: '#182230' }}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
       </motion.div>
     </motion.div>
   )
