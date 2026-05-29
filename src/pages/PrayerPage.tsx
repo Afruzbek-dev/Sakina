@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, Clock, X } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
@@ -15,6 +15,50 @@ interface PrayerData {
 const focusEmojis = ['😵', '😟', '😐', '🙂', '🧘']
 const focusLabels = ['Very Distracted', 'Distracted', 'Neutral', 'Focused', 'Deeply Focused']
 
+const khushuTips = [
+  'Focus on the meaning of Al-Fatiha during your next prayer',
+  'Visualize standing before Allah when you say "Allahu Akbar"',
+  'Slow down your recitation and reflect on each word',
+  'Remember that this prayer could be your last',
+  'Let go of worldly thoughts before entering salah',
+]
+
+function useCountdown() {
+  const [timeRemaining, setTimeRemaining] = useState('')
+
+  useEffect(() => {
+    function getNextPrayerTarget(): Date {
+      const now = new Date()
+      const target = new Date(now)
+      target.setHours(now.getHours() + 2, now.getMinutes() + 15, 0, 0)
+      return target
+    }
+
+    const target = getNextPrayerTarget()
+
+    function updateTimer() {
+      const now = new Date()
+      const diff = target.getTime() - now.getTime()
+      if (diff <= 0) {
+        setTimeRemaining('00:00:00')
+        return
+      }
+      const hours = Math.floor(diff / (1000 * 60 * 60))
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+      setTimeRemaining(
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+      )
+    }
+
+    updateTimer()
+    const interval = setInterval(updateTimer, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return timeRemaining
+}
+
 export default function PrayerPage() {
   const { updateProgress } = useAppContext()
   const [prayers, setPrayers] = useState<PrayerData[]>([
@@ -25,6 +69,10 @@ export default function PrayerPage() {
     { name: 'Isha', arabic: 'العشاء', time: '8:00 PM', completed: false, focusRating: null },
   ])
   const [ratingPrayer, setRatingPrayer] = useState<number | null>(null)
+  const [showKhushuTip, setShowKhushuTip] = useState(false)
+  const [tipIndex, setTipIndex] = useState(0)
+
+  const countdown = useCountdown()
 
   const currentIdx = prayers.findIndex((p) => !p.completed)
   const currentPrayer = currentIdx >= 0 ? prayers[currentIdx] : prayers[prayers.length - 1]
@@ -44,6 +92,8 @@ export default function PrayerPage() {
     const completedCount = prayers.filter((p) => p.completed).length + 1
     updateProgress('salah', { completed: completedCount })
     setRatingPrayer(null)
+    setTipIndex(Math.floor(Math.random() * khushuTips.length))
+    setShowKhushuTip(true)
   }
 
   function dismissRating() {
@@ -57,35 +107,96 @@ export default function PrayerPage() {
       initial="hidden"
       animate="show"
     >
-      {/* Current Prayer Hero */}
+      {/* Current Prayer Hero - 320px height, 32px border radius */}
       <motion.div
         variants={item}
-        className="relative overflow-hidden rounded-2xl p-6 text-center gradient-emerald"
+        className="relative overflow-hidden rounded-[32px] text-center"
+        style={{ height: 320 }}
       >
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="relative z-10">
-          <p className="text-white/60 text-sm mb-1" lang="ar">{currentPrayer.arabic}</p>
-          <h1 className="text-4xl font-bold text-white">{currentPrayer.name}</h1>
+        {/* Animated gradient background */}
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            background: 'linear-gradient(135deg, #0D9488, #2DD4BF, #14B8A6, #0D9488, #2DD4BF)',
+            backgroundSize: '300% 300%',
+          }}
+        />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative z-10 flex flex-col items-center justify-center h-full px-6">
+          {/* Arabic prayer name - 42px Amiri font */}
+          <p
+            className="text-white/80 mb-2"
+            lang="ar"
+            dir="rtl"
+            style={{ fontFamily: "'Amiri', serif", fontSize: 42, lineHeight: '56px' }}
+          >
+            {currentPrayer.arabic}
+          </p>
+          {/* English name */}
+          <h1 className="text-3xl font-bold text-white">{currentPrayer.name}</h1>
+          {/* Time info */}
           <div className="flex items-center justify-center gap-2 mt-3 text-white/80">
             <Clock className="w-4 h-4" />
             <span className="text-sm">
               {currentIdx >= 0 ? 'Coming up' : 'All done'} &middot; {currentPrayer.time}
             </span>
           </div>
+          {/* Real-time countdown timer */}
           {currentIdx >= 0 && (
-            <p className="text-emerald-glow text-xs mt-2 font-medium">in 2h 15m</p>
+            <motion.div
+              className="mt-4 bg-black/20 backdrop-blur-sm rounded-2xl px-5 py-2"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <span className="text-2xl font-mono font-bold text-white tracking-wider">
+                {countdown}
+              </span>
+            </motion.div>
           )}
         </div>
       </motion.div>
+
+      {/* Khushu Tips Card - shown after rating a prayer */}
+      <AnimatePresence>
+        {showKhushuTip && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -10, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-surface/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 relative">
+              <button
+                onClick={() => setShowKhushuTip(false)}
+                className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white/50 hover:text-white/80"
+                aria-label="Dismiss tip"
+              >
+                <X className="w-3 h-3" />
+              </button>
+              <p className="text-xs font-medium text-primary uppercase tracking-wider mb-2">
+                Khushu Tip
+              </p>
+              <p className="text-sm text-white/70 leading-relaxed pr-6">
+                {khushuTips[tipIndex]}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Prayer Timeline */}
       <motion.div variants={item} className="space-y-1">
         <h2 className="text-lg font-semibold text-cream-warm mb-3">Today&apos;s Prayers</h2>
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-[18px] top-4 bottom-4 w-0.5 bg-white/10" />
+          <div className="absolute left-[22px] top-4 bottom-4 w-0.5 bg-white/10" />
 
-          <div className="space-y-1">
+          <div className="space-y-2">
             {prayers.map((prayer, idx) => {
               const isCurrent = idx === currentIdx
               const isUpcoming = idx > currentIdx && currentIdx >= 0
@@ -94,26 +205,27 @@ export default function PrayerPage() {
                 <motion.button
                   key={prayer.name}
                   onClick={() => markComplete(idx)}
-                  className="w-full flex items-center gap-4 p-3 rounded-xl transition-colors hover:bg-white/5 relative"
+                  className="w-full flex items-center gap-4 px-4 rounded-[20px] transition-colors hover:bg-white/5 relative"
+                  style={{ minHeight: 84 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  {/* Status indicator */}
+                  {/* Status indicator - w-11 h-11 */}
                   <div className="relative z-10">
                     {prayer.completed ? (
-                      <div className="w-9 h-9 rounded-full bg-emerald-glow/20 flex items-center justify-center">
+                      <div className="w-11 h-11 rounded-full bg-emerald-glow/20 flex items-center justify-center">
                         <Check className="w-5 h-5 text-emerald-glow" />
                       </div>
                     ) : isCurrent ? (
-                      <div className="w-9 h-9 rounded-full bg-emerald-glow/20 flex items-center justify-center">
+                      <div className="w-11 h-11 rounded-full bg-emerald-glow/20 flex items-center justify-center">
                         <motion.div
-                          className="w-3 h-3 rounded-full bg-emerald-glow"
+                          className="w-3.5 h-3.5 rounded-full bg-emerald-glow"
                           animate={{ scale: [1, 1.3, 1], opacity: [1, 0.6, 1] }}
                           transition={{ duration: 1.5, repeat: Infinity }}
                         />
                       </div>
                     ) : (
-                      <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                        <div className="w-2 h-2 rounded-full bg-white/30" />
+                      <div className="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                        <div className="w-2.5 h-2.5 rounded-full bg-white/30" />
                       </div>
                     )}
                   </div>
@@ -121,7 +233,7 @@ export default function PrayerPage() {
                   {/* Prayer info */}
                   <div className="flex-1 text-left">
                     <p
-                      className={`font-medium ${
+                      className={`font-medium text-base ${
                         prayer.completed
                           ? 'text-white/60'
                           : isCurrent
@@ -131,13 +243,13 @@ export default function PrayerPage() {
                     >
                       {prayer.name}
                     </p>
-                    <p className="text-xs text-white/40">{prayer.time}</p>
+                    <p className="text-xs text-white/40 mt-0.5">{prayer.time}</p>
                   </div>
 
                   {/* Status badge */}
                   <div>
                     {prayer.completed && prayer.focusRating && (
-                      <span className="text-xs text-white/40">
+                      <span className="text-sm text-white/40">
                         {focusEmojis[prayer.focusRating - 1]}
                       </span>
                     )}
@@ -155,7 +267,7 @@ export default function PrayerPage() {
         </div>
       </motion.div>
 
-      {/* Focus Rating Modal */}
+      {/* Focus Rating Modal - scale entrance, gradient background, 4xl emojis */}
       <AnimatePresence>
         {ratingPrayer !== null && (
           <motion.div
@@ -166,10 +278,14 @@ export default function PrayerPage() {
             onClick={dismissRating}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.7, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-charcoal-light border border-white/10 rounded-2xl p-6 w-full max-w-sm relative"
+              exit={{ scale: 0.7, opacity: 0 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              className="w-full max-w-sm relative rounded-2xl p-6 border border-white/10"
+              style={{
+                background: 'linear-gradient(180deg, #121923, #182230)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -197,7 +313,7 @@ export default function PrayerPage() {
                     className="flex flex-col items-center gap-1"
                     aria-label={focusLabels[i]}
                   >
-                    <span className="text-3xl">{emoji}</span>
+                    <span className="text-4xl">{emoji}</span>
                     <span className="text-[10px] text-white/40">{focusLabels[i]}</span>
                   </motion.button>
                 ))}
@@ -207,7 +323,7 @@ export default function PrayerPage() {
         )}
       </AnimatePresence>
 
-      {/* Quality Tracking */}
+      {/* Weekly Focus Chart - gradient bars */}
       <motion.div
         variants={item}
         className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5"
@@ -220,7 +336,10 @@ export default function PrayerPage() {
           {weeklyFocus.map((val, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-1">
               <motion.div
-                className="w-full rounded-sm bg-emerald-glow/60"
+                className="w-full rounded-sm"
+                style={{
+                  background: 'linear-gradient(to top, #0D9488, #2DD4BF)',
+                }}
                 initial={{ height: 0 }}
                 animate={{ height: `${(val / 5) * 100}%` }}
                 transition={{ duration: 0.6, delay: i * 0.08 }}
