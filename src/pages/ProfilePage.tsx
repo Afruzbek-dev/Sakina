@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { User, Bell, Palette, Edit, CreditCard, Shield, Star, HelpCircle, Info, ChevronRight, Sunrise, Flame, BookOpen, TrendingUp, Moon } from 'lucide-react'
+import { User, Bell, Palette, Edit, CreditCard, Shield, Star, HelpCircle, Info, ChevronRight, Sunrise, Flame, BookOpen, TrendingUp, Moon, LogOut } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
+import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
 import { container, item } from '../lib/motion-variants'
 
@@ -57,9 +59,11 @@ const achievements = [
 
 export default function ProfilePage() {
   const { user, streak } = useAppContext()
+  const { signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const isLight = theme === 'light'
   const [notifications, setNotifications] = useState(true)
+  const navigate = useNavigate()
 
   const stats = [
     { label: 'Prayers', value: '847' },
@@ -202,6 +206,24 @@ export default function ProfilePage() {
         <SettingItem icon={<Star className="w-4 h-4" />} label="Rate the App" isLight={isLight} />
         <SettingItem icon={<HelpCircle className="w-4 h-4" />} label="Help & Support" isLight={isLight} />
         <SettingItem icon={<Info className="w-4 h-4" />} label="About Sakina" isLight={isLight} />
+      </motion.div>
+
+      {/* Sign Out Button */}
+      <motion.div variants={item}>
+        <button
+          onClick={() => {
+            signOut()
+            navigate('/auth')
+          }}
+          className={`w-full h-[48px] rounded-full flex items-center justify-center gap-2 font-medium text-[15px] ${
+            isLight
+              ? 'border border-red-200 text-red-500'
+              : 'border border-red-500/30 text-red-400'
+          }`}
+        >
+          <LogOut className="w-4 h-4" />
+          Chiqish
+        </button>
       </motion.div>
 
       {/* App version */}
