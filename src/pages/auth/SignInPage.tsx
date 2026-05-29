@@ -37,12 +37,10 @@ export default function SignInPage() {
 
   const handleGoogle = () => {
     signInWithGoogle()
-    navigate('/')
   }
 
   const handleApple = () => {
     signInWithApple()
-    navigate('/')
   }
 
   return (

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
 
-const STORAGE_KEY = 'niya-auth'
+const STORAGE_KEY = 'sakina-auth'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -78,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(() => {
     setState(defaultState)
     localStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem('sakina-state')
   }, [])
 
   return (

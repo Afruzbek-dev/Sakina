@@ -27,7 +27,7 @@ export default function MagicLinkSentPage() {
 
   const handleVerify = () => {
     verifyMagicLink()
-    navigate('/onboarding')
+    navigate('/')
   }
 
   return (
