@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-emerald-deep: #064E3B;
+  --color-emerald-glow: #10B981;
+  --color-gold-soft: #D4A574;
+  --color-gold-warm: #C8956C;
+  --color-cream-warm: #FDF8F0;
+  --color-charcoal: #1A1A2E;
+  --color-charcoal-light: #2D2D44;
+  --color-charcoal-lighter: #3D3D5C;
+  --font-family-sans: 'Inter', sans-serif;
+}
+
+/* Dark-mode-first base styles */
+html {
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-charcoal);
+  color: var(--color-cream-warm);
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+/* Glassmorphism utility classes */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Custom gradient classes */
+.gradient-emerald {
+  background: linear-gradient(135deg, var(--color-emerald-deep) 0%, var(--color-emerald-glow) 100%);
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, var(--color-gold-warm) 0%, var(--color-gold-soft) 100%);
+}
+
+.gradient-charcoal {
+  background: linear-gradient(180deg, var(--color-charcoal) 0%, var(--color-charcoal-light) 100%);
+}
+
+/* Organic shape utilities */
+.blob-shape {
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+}
+
+.organic-rounded {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+/* Smooth scrolling within app */
+.scroll-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Shimmer animation for skeleton loading states */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* Glass card inner highlight */
+.glass-inner {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Smooth scroll behavior */
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
