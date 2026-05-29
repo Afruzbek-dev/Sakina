@@ -1,24 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* CSS Custom Properties for theming */
+:root {
+  --bg: #0B0F14;
+  --surface: #121923;
+  --card: #182230;
+  --primary: #2DD4BF;
+  --secondary: #8B5CF6;
+  --gold: #F4C95D;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A1A1AA;
+}
+
+[data-theme="light"] {
+  --bg: #FAFAF7;
+  --surface: #F5F5F0;
+  --card: #FFFFFF;
+  --primary: #0A7E6E;
+  --secondary: #E8E4F4;
+  --gold: #D4A853;
+  --success: #34C759;
+  --warning: #F59E0B;
+  --danger: #FF3B30;
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B7280;
+}
+
 @theme {
   /* Primary design system colors */
-  --color-background: #0B0F14;
-  --color-surface: #121923;
-  --color-card: #182230;
-  --color-primary: #2DD4BF;
-  --color-secondary: #8B5CF6;
-  --color-gold: #F4C95D;
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #A1A1AA;
+  --color-background: var(--bg);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-gold: var(--gold);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
 
   /* Backward-compatible aliases */
-  --color-emerald-glow: #2DD4BF;
+  --color-emerald-glow: var(--primary);
   --color-emerald-deep: #0D9488;
-  --color-gold-soft: #F4C95D;
+  --color-gold-soft: var(--gold);
   --color-gold-warm: #D4A853;
   --color-charcoal: #0B0F14;
   --color-charcoal-light: #121923;
@@ -45,8 +74,8 @@ html {
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
+  background-color: var(--bg);
+  color: var(--text-primary);
   min-height: 100dvh;
   overflow: hidden;
 }
@@ -76,6 +105,62 @@ body {
   -webkit-backdrop-filter: blur(48px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Light mode glass overrides */
+[data-theme="light"] .glass {
+  background: #FFFFFF;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .glass-strong {
+  background: #FFFFFF;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .glass-premium {
+  background: #FFFFFF;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Light mode noise overlay - hidden */
+[data-theme="light"] .noise-overlay::after {
+  display: none;
+}
+
+/* Light mode card-premium */
+[data-theme="light"] .card-premium {
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Light mode shadow glow - removed */
+[data-theme="light"] .shadow-glow-primary {
+  box-shadow: none;
+}
+
+[data-theme="light"] .shadow-glow-gold {
+  box-shadow: none;
+}
+
+/* Light mode skeleton shimmer */
+[data-theme="light"] .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.04) 50%,
+    transparent 100%
+  );
 }
 
 /* Custom gradient classes */

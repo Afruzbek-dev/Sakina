@@ -2,9 +2,12 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Check } from 'lucide-react'
 import { useAppContext } from '../../contexts/AppContext'
+import { useTheme } from '../../contexts/ThemeContext'
 
 export default function DailyReflection() {
   const { updateProgress, progress } = useAppContext()
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
   const [expanded, setExpanded] = useState(false)
   const [text, setText] = useState('')
   const [saved, setSaved] = useState(false)
@@ -23,23 +26,23 @@ export default function DailyReflection() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.7 }}
-      className="rounded-3xl p-5 bg-white/5 backdrop-blur-xl border border-gold/20 border-l-4 border-l-gold shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+      className={`rounded-3xl p-5 border-l-4 border-l-gold ${isLight ? 'bg-white shadow-sm border border-amber-100' : 'bg-white/5 backdrop-blur-xl border border-gold/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'}`}
     >
       {/* Header */}
       <button
         onClick={() => !saved && setExpanded(!expanded)}
         className="w-full flex items-center gap-3 text-left"
       >
-        <div className="relative w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
-          {/* Warm glow behind icon */}
-          <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 20px rgba(244, 201, 93, 0.3)' }} />
+        <div className={`relative w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isLight ? 'bg-amber-50' : 'bg-gold/10'}`}>
+          {/* Warm glow behind icon - dark mode only */}
+          {!isLight && <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 20px rgba(244, 201, 93, 0.3)' }} />}
           <Heart size={20} className="text-gold relative z-10" />
         </div>
         <div className="flex-1">
-          <h3 className="text-base font-medium text-white">
+          <h3 className={`text-base font-medium ${isLight ? 'text-gray-900' : 'text-white'}`}>
             {progress.reflection.done ? 'Reflection complete' : 'What are you grateful for today?'}
           </h3>
-          <p className="text-xs text-white/50 mt-0.5">Daily reflection</p>
+          <p className={`text-xs mt-0.5 ${isLight ? 'text-gray-400' : 'text-white/50'}`}>Daily reflection</p>
         </div>
       </button>
 
@@ -60,7 +63,7 @@ export default function DailyReflection() {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Write your reflection..."
-                    className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white placeholder:text-white/30 resize-none focus:outline-none focus:border-gold/40 transition-colors"
+                    className={`w-full h-24 rounded-xl p-3 text-sm resize-none focus:outline-none transition-colors ${isLight ? 'bg-gray-50 border border-gray-200 text-gray-900 placeholder:text-gray-300 focus:border-amber-300' : 'bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-gold/40'}`}
                   />
                   <AnimatePresence>
                     {text.trim() && (
@@ -70,7 +73,7 @@ export default function DailyReflection() {
                         exit={{ opacity: 0, y: 10 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleSave}
-                        className="mt-3 px-4 py-2 rounded-xl bg-gold/20 text-gold text-sm font-medium transition-colors hover:bg-gold/30"
+                        className={`mt-3 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${isLight ? 'bg-amber-50 text-amber-700 hover:bg-amber-100' : 'bg-gold/20 text-gold hover:bg-gold/30'}`}
                       >
                         Save Reflection
                       </motion.button>

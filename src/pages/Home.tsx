@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Lock, BookOpen } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
+import { useTheme } from '../contexts/ThemeContext'
 import ProgressRing from '../components/home/ProgressRing'
 import NextActionCard from '../components/home/NextActionCard'
 import StreakWidget from '../components/home/StreakWidget'
@@ -22,6 +23,8 @@ function getFormattedDate(): string {
 export default function Home() {
   const navigate = useNavigate()
   const { user, progress } = useAppContext()
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
   const dateStr = getFormattedDate()
   const [loading, setLoading] = useState(true)
   const [showCelebration, setShowCelebration] = useState(false)
@@ -73,10 +76,10 @@ export default function Home() {
               style={{ minHeight: '72px' }}
             >
               <div>
-                <h1 className="font-bold text-white" style={{ fontSize: '24px' }}>
+                <h1 className={`font-bold ${isLight ? 'text-gray-900' : 'text-white'}`} style={{ fontSize: '24px' }}>
                   Assalamu Alaikum, {user.name || 'friend'}
                 </h1>
-                <p className="text-sm text-white/50 mt-1">{dateStr}</p>
+                <p className={`text-sm mt-1 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>{dateStr}</p>
               </div>
 
               {/* Avatar circle */}
@@ -105,7 +108,7 @@ export default function Home() {
                 aria-label="View prayers"
               >
                 <ProgressRing />
-                <p className="text-xs text-white/50 mt-2">Tap to view prayers</p>
+                <p className={`text-xs mt-2 ${isLight ? 'text-gray-400' : 'text-white/50'}`}>Tap to view prayers</p>
               </button>
             </motion.div>
 
@@ -124,19 +127,19 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
-              className="relative z-10 rounded-2xl p-5 bg-white/5 backdrop-blur-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+              className={`relative z-10 rounded-2xl p-5 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'bg-white/5 backdrop-blur-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'}`}
             >
               <div className="flex items-center gap-2 mb-3">
                 <BookOpen size={14} className="text-primary" />
                 <span className="text-xs font-medium text-primary/80 uppercase tracking-wider">Daily Hadith</span>
               </div>
-              <p className="text-white/40 text-sm mb-2" style={{ fontFamily: "'Amiri', serif" }}>
-                إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ
+              <p className={`text-sm mb-2 ${isLight ? 'text-gray-400' : 'text-white/40'}`} style={{ fontFamily: "'Amiri', serif" }}>
+                {'\u0625\u0650\u0646\u0651\u064E\u0645\u064E\u0627 \u0627\u0644\u0623\u064E\u0639\u0652\u0645\u064E\u0627\u0644\u064F \u0628\u0650\u0627\u0644\u0646\u0651\u0650\u064A\u0651\u064E\u0627\u062A\u0650'}
               </p>
-              <p className="text-base text-white/80 leading-relaxed">
+              <p className={`text-base leading-relaxed ${isLight ? 'text-gray-700' : 'text-white/80'}`}>
                 Actions are judged by intentions, and every person will get what they intended.
               </p>
-              <p className="text-xs text-white/40 mt-2">Sahih al-Bukhari</p>
+              <p className={`text-xs mt-2 ${isLight ? 'text-gray-400' : 'text-white/40'}`}>Sahih al-Bukhari</p>
             </motion.div>
 
             {/* Daily Reflection */}
@@ -154,15 +157,15 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.0 }}
-              className="relative z-10 rounded-2xl p-5 bg-white/5 backdrop-blur-xl border border-gold/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+              className={`relative z-10 rounded-2xl p-5 ${isLight ? 'bg-white shadow-sm border border-amber-100' : 'bg-white/5 backdrop-blur-xl border border-gold/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isLight ? 'bg-amber-50' : 'bg-gold/10'}`}>
                   <Lock size={18} className="text-gold" />
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gold/80 uppercase tracking-wider font-medium mb-1">Tomorrow Preview</p>
-                  <p className="text-sm text-white/70 leading-relaxed">
+                  <p className={`text-sm leading-relaxed ${isLight ? 'text-gray-600' : 'text-white/70'}`}>
                     Tomorrow: Surah Al-Kahf reading challenge - unlock with consistency
                   </p>
                 </div>

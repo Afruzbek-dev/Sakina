@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion'
 import { useAppContext } from '../../contexts/AppContext'
+import { useTheme } from '../../contexts/ThemeContext'
 
 export default function ProgressRing() {
   const { progress } = useAppContext()
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
 
   const salahTotal = progress.salah.total || 1
   const quranTarget = progress.quran.target || 1
@@ -31,10 +34,10 @@ export default function ProgressRing() {
   return (
     <div className="flex flex-col items-center gap-3">
       {/* Daily Progress label */}
-      <span className="text-xs font-medium text-white/60 uppercase tracking-wider">Daily Progress</span>
+      <span className={`text-xs font-medium uppercase tracking-wider ${isLight ? 'text-gray-400' : 'text-white/60'}`}>Daily Progress</span>
 
       {/* Ring with glow */}
-      <div className="relative" style={{ boxShadow: '0 0 40px rgba(45, 212, 191, 0.2), 0 0 80px rgba(45, 212, 191, 0.1)', borderRadius: '50%' }}>
+      <div className="relative" style={isLight ? undefined : { boxShadow: '0 0 40px rgba(45, 212, 191, 0.2), 0 0 80px rgba(45, 212, 191, 0.1)', borderRadius: '50%' }}>
         <svg width={size} height={size} className="relative -rotate-90">
           {/* Background track */}
           <circle
@@ -42,7 +45,7 @@ export default function ProgressRing() {
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.05)"
+            stroke={isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}
             strokeWidth={strokeWidth}
           />
 
@@ -98,7 +101,7 @@ export default function ProgressRing() {
         {/* Center percentage with pulse */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.span
-            className="text-3xl font-bold text-white"
+            className={`text-3xl font-bold ${isLight ? 'text-gray-900' : 'text-white'}`}
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: [1, 1.05, 1] }}
             transition={{
@@ -115,15 +118,15 @@ export default function ProgressRing() {
       <div className="flex items-center gap-4 text-xs">
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-primary" />
-          <span className="text-white/70">{progress.salah.completed}/{progress.salah.total} Salah</span>
+          <span className={isLight ? 'text-gray-600' : 'text-white/70'}>{progress.salah.completed}/{progress.salah.total} Salah</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-gold" />
-          <span className="text-white/70">{progress.quran.versesRead}/{progress.quran.target} Verses</span>
+          <span className={isLight ? 'text-gray-600' : 'text-white/70'}>{progress.quran.versesRead}/{progress.quran.target} Verses</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2 h-2 rounded-full bg-secondary" />
-          <span className="text-white/70">{progress.reflection.done ? 'Done' : 'Pending'}</span>
+          <span className={isLight ? 'text-gray-600' : 'text-white/70'}>{progress.reflection.done ? 'Done' : 'Pending'}</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { MotionConfig } from 'framer-motion'
 import { AppProvider, useAppContext } from './contexts/AppContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import MobileFrame from './components/layout/MobileFrame'
 import AppShell from './components/layout/AppShell'
 import OnboardingLayout from './pages/onboarding/OnboardingLayout'
@@ -56,13 +57,15 @@ function AppRoutes() {
 export default function App() {
   return (
     <MotionConfig reducedMotion="user">
-      <AppProvider>
-        <BrowserRouter>
-          <MobileFrame>
-            <AppRoutes />
-          </MobileFrame>
-        </BrowserRouter>
-      </AppProvider>
+      <ThemeProvider>
+        <AppProvider>
+          <BrowserRouter>
+            <MobileFrame>
+              <AppRoutes />
+            </MobileFrame>
+          </BrowserRouter>
+        </AppProvider>
+      </ThemeProvider>
     </MotionConfig>
   )
 }

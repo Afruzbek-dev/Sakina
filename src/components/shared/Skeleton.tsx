@@ -1,10 +1,14 @@
 import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
+import { useTheme } from '../../contexts/ThemeContext'
 
 function SkeletonBase({ className, style }: { className?: string; style?: CSSProperties }) {
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
+
   return (
     <motion.div
-      className={`relative overflow-hidden bg-white/5 ${className ?? ''}`}
+      className={`relative overflow-hidden ${isLight ? 'bg-gray-100' : 'bg-white/5'} ${className ?? ''}`}
       style={style}
       initial={{ opacity: 0.5 }}
       animate={{ opacity: 1 }}

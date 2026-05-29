@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, Lightbulb } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 import { container, item } from '../lib/motion-variants'
 
 const moods = [
-  { emoji: '😰', label: 'Stressed' },
-  { emoji: '😔', label: 'Low' },
-  { emoji: '😐', label: 'Neutral' },
-  { emoji: '🙂', label: 'Good' },
-  { emoji: '😊', label: 'Great' },
+  { emoji: '\u{1F630}', label: 'Stressed' },
+  { emoji: '\u{1F614}', label: 'Low' },
+  { emoji: '\u{1F610}', label: 'Neutral' },
+  { emoji: '\u{1F642}', label: 'Good' },
+  { emoji: '\u{1F60A}', label: 'Great' },
 ]
 
 interface Message {
@@ -26,8 +27,8 @@ const coachMessages: Message[] = [
 ]
 
 const insightCards = [
-  { text: 'Sleep before 11 PM increased your Fajr consistency by 40%', icon: '🌙' },
-  { text: 'Weekends are your strongest Quran reading days', icon: '📖' },
+  { text: 'Sleep before 11 PM increased your Fajr consistency by 40%', icon: '\u{1F319}' },
+  { text: 'Weekends are your strongest Quran reading days', icon: '\u{1F4D6}' },
 ]
 
 const suggestedPrompts = [
@@ -38,6 +39,8 @@ const suggestedPrompts = [
 ]
 
 export default function CoachPage() {
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
   const [selectedMood, setSelectedMood] = useState<number | null>(null)
   const [showTyping, setShowTyping] = useState(true)
   const [messages, setMessages] = useState<Message[]>(coachMessages)
@@ -85,8 +88,8 @@ export default function CoachPage() {
 
       {/* Header */}
       <motion.div variants={item} className="text-center">
-        <h1 className="text-2xl font-bold text-cream-warm">AI Coach</h1>
-        <p className="text-[13px] text-white/50 mt-0.5">Your spiritual mentor</p>
+        <h1 className={`text-2xl font-bold ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>AI Coach</h1>
+        <p className={`text-[13px] mt-0.5 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>Your spiritual mentor</p>
       </motion.div>
 
       {/* Daily Check-in / Mood Selector */}
@@ -95,9 +98,9 @@ export default function CoachPage() {
           <motion.div
             variants={item}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5"
+            className={`rounded-2xl p-5 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'bg-white/5 backdrop-blur-xl border border-white/10'}`}
           >
-            <p className="text-[16px] font-medium text-cream-warm mb-4">
+            <p className={`text-[16px] font-medium mb-4 ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>
               How are you feeling today?
             </p>
             <div className="flex justify-between">
@@ -114,15 +117,10 @@ export default function CoachPage() {
                   <motion.span
                     className="text-2xl block"
                     whileHover={{ scale: 1.15 }}
-                    style={
-                      selectedMood === i
-                        ? { boxShadow: '0 0 12px rgba(45, 212, 191, 0.4)' }
-                        : undefined
-                    }
                   >
                     {mood.emoji}
                   </motion.span>
-                  <span className="text-[10px] text-white/40">{mood.label}</span>
+                  <span className={`text-[10px] ${isLight ? 'text-gray-400' : 'text-white/40'}`}>{mood.label}</span>
                 </motion.button>
               ))}
             </div>
@@ -139,19 +137,19 @@ export default function CoachPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex gap-3"
           >
-            <div className="w-7 h-7 rounded-full bg-emerald-glow/20 flex items-center justify-center flex-shrink-0 mt-1">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-glow" />
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${isLight ? 'bg-teal-50' : 'bg-emerald-glow/20'}`}>
+              <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-emerald-glow'}`} />
             </div>
             <div className="flex-1 min-w-0">
               <div
-                className="rounded-2xl rounded-tl-sm px-5 py-4 border border-white/5"
-                style={{
+                className={`rounded-2xl rounded-tl-sm px-5 py-4 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'border border-white/5'}`}
+                style={isLight ? undefined : {
                   background: 'linear-gradient(135deg, #182230, #1d2a3a)',
                 }}
               >
-                <p className="text-[16px] text-cream-warm/90 leading-relaxed">{msg.text}</p>
+                <p className={`text-[16px] leading-relaxed ${isLight ? 'text-gray-700' : 'text-cream-warm/90'}`}>{msg.text}</p>
               </div>
-              <p className="text-[10px] text-white/30 mt-1 ml-2">{msg.time}</p>
+              <p className={`text-[10px] mt-1 ml-2 ${isLight ? 'text-gray-300' : 'text-white/30'}`}>{msg.time}</p>
             </div>
           </motion.div>
         ))}
@@ -165,12 +163,12 @@ export default function CoachPage() {
               exit={{ opacity: 0, transition: { duration: 0.3, ease: 'easeInOut' } }}
               className="flex gap-3"
             >
-              <div className="w-7 h-7 rounded-full bg-emerald-glow/20 flex items-center justify-center flex-shrink-0 mt-1">
-                <Sparkles className="w-3.5 h-3.5 text-emerald-glow" />
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-1 ${isLight ? 'bg-teal-50' : 'bg-emerald-glow/20'}`}>
+                <Sparkles className={`w-3.5 h-3.5 ${isLight ? 'text-teal-600' : 'text-emerald-glow'}`} />
               </div>
               <div
-                className="rounded-2xl rounded-tl-sm px-5 py-4 border border-white/5"
-                style={{
+                className={`rounded-2xl rounded-tl-sm px-5 py-4 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'border border-white/5'}`}
+                style={isLight ? undefined : {
                   background: 'linear-gradient(135deg, #182230, #1d2a3a)',
                 }}
               >
@@ -178,7 +176,7 @@ export default function CoachPage() {
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
-                      className="w-[3px] h-[3px] rounded-full bg-white/40"
+                      className={`w-[3px] h-[3px] rounded-full ${isLight ? 'bg-gray-400' : 'bg-white/40'}`}
                       animate={{ y: [0, -4, 0] }}
                       transition={{ duration: 0.6, delay: i * 0.15, repeat: Infinity, ease: 'easeInOut' }}
                     />
@@ -193,21 +191,21 @@ export default function CoachPage() {
       {/* Weekly Insight Summary */}
       <motion.div
         variants={item}
-        className="bg-[#121923] border border-white/10 rounded-3xl p-5"
+        className={`rounded-3xl p-5 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'bg-[#121923] border border-white/10'}`}
       >
-        <h3 className="text-[13px] font-medium text-white/50 mb-4">Weekly Insight Summary</h3>
+        <h3 className={`text-[13px] font-medium mb-4 ${isLight ? 'text-gray-400' : 'text-white/50'}`}>Weekly Insight Summary</h3>
         <div className="grid grid-cols-3 gap-3">
           <div className="text-center">
-            <p className="text-xl font-bold text-[#2DD4BF]">85%</p>
-            <p className="text-[13px] text-white/50 mt-1">Prayer</p>
+            <p className="text-xl font-bold text-primary">85%</p>
+            <p className={`text-[13px] mt-1 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>Prayer</p>
           </div>
           <div className="text-center">
-            <p className="text-xl font-bold text-[#2DD4BF]">92%</p>
-            <p className="text-[13px] text-white/50 mt-1">Quran</p>
+            <p className="text-xl font-bold text-primary">92%</p>
+            <p className={`text-[13px] mt-1 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>Quran</p>
           </div>
           <div className="text-center">
-            <p className="text-xl font-bold text-[#2DD4BF]">5 days</p>
-            <p className="text-[13px] text-white/50 mt-1">Reflection</p>
+            <p className="text-xl font-bold text-primary">5 days</p>
+            <p className={`text-[13px] mt-1 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>Reflection</p>
           </div>
         </div>
       </motion.div>
@@ -215,42 +213,42 @@ export default function CoachPage() {
       {/* Reflection Prompt */}
       <motion.div
         variants={item}
-        className="rounded-2xl p-5 border-l-4 border-l-[#F4C95D]"
-        style={{ backgroundColor: '#182230' }}
+        className={`rounded-2xl p-5 border-l-4 border-l-[#F4C95D] ${isLight ? 'bg-white shadow-sm border border-gray-100' : ''}`}
+        style={isLight ? undefined : { backgroundColor: '#182230' }}
       >
         <div className="flex items-center gap-2 mb-2">
           <Lightbulb className="w-4 h-4 text-gold-soft" />
           <span className="text-[13px] font-medium text-gold-soft">Today&apos;s Reflection</span>
         </div>
-        <p className="text-[16px] text-cream-warm/90 leading-relaxed italic">
+        <p className={`text-[16px] leading-relaxed italic ${isLight ? 'text-gray-700' : 'text-cream-warm/90'}`}>
           &ldquo;What is one thing you can do today that your future self will thank you for?&rdquo;
         </p>
       </motion.div>
 
       {/* Habit Insights */}
       <motion.div variants={item} className="space-y-3">
-        <h3 className="text-[13px] font-medium text-cream-warm">Habit Insights</h3>
+        <h3 className={`text-[13px] font-medium ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>Habit Insights</h3>
         {insightCards.map((insight, i) => (
           <motion.div
             key={i}
             whileTap={{ scale: 0.98 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 flex items-center gap-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+            className={`rounded-xl p-4 flex items-center gap-3 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'bg-white/5 backdrop-blur-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]'}`}
           >
             <span className="text-xl">{insight.icon}</span>
-            <p className="text-[13px] text-white/70 leading-relaxed">{insight.text}</p>
+            <p className={`text-[13px] leading-relaxed ${isLight ? 'text-gray-600' : 'text-white/70'}`}>{insight.text}</p>
           </motion.div>
         ))}
       </motion.div>
 
       {/* Suggested Prompts */}
       <motion.div variants={item}>
-        <h3 className="text-[13px] font-medium text-cream-warm mb-3">Suggested Prompts</h3>
+        <h3 className={`text-[13px] font-medium mb-3 ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>Suggested Prompts</h3>
         <div className="overflow-x-auto flex gap-3 pb-2 -mx-1 px-1">
           {suggestedPrompts.map((prompt, i) => (
             <button
               key={i}
-              className="h-[44px] flex-shrink-0 rounded-full border border-white/10 px-[18px] text-[13px] text-white/70 whitespace-nowrap"
-              style={{ backgroundColor: '#182230' }}
+              className={`h-[44px] flex-shrink-0 rounded-full border px-[18px] text-[13px] whitespace-nowrap ${isLight ? 'border-gray-200 bg-white text-gray-600' : 'border-white/10 text-white/70'}`}
+              style={isLight ? undefined : { backgroundColor: '#182230' }}
             >
               {prompt}
             </button>

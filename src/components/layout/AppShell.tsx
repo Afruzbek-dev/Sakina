@@ -2,6 +2,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Home, BookOpen, Sparkles, Trophy, User } from 'lucide-react'
 import PageTransition from './PageTransition'
+import { useTheme } from '../../contexts/ThemeContext'
 
 const tabs = [
   { path: '/', icon: Home, label: 'Home' },
@@ -14,6 +15,8 @@ const tabs = [
 export default function AppShell() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
 
   return (
     <div className="flex flex-col h-full">
@@ -26,7 +29,7 @@ export default function AppShell() {
 
       {/* Bottom tab navigation */}
       <nav
-        className="glass-premium shrink-0 px-2 pt-2 pb-8"
+        className={`shrink-0 px-2 pt-2 pb-8 ${isLight ? 'bg-white border-t border-gray-200' : 'glass-premium'}`}
         style={{ height: '88px' }}
         role="tablist"
       >
@@ -45,9 +48,11 @@ export default function AppShell() {
                 className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-colors duration-200 ${
                   isActive
                     ? 'text-primary'
+                    : isLight
+                    ? 'text-gray-400 hover:text-gray-600'
                     : 'text-white/50 hover:text-white/80'
                 }`}
-                style={isActive ? { boxShadow: '0 0 12px rgba(45, 212, 191, 0.25)' } : undefined}
+                style={isActive ? { boxShadow: isLight ? 'none' : '0 0 12px rgba(45, 212, 191, 0.25)' } : undefined}
               >
                 <Icon size={24} strokeWidth={isActive ? 2.5 : 1.5} />
                 <span style={{ fontSize: '12px' }} className="font-medium">{tab.label}</span>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Sun, BookOpen, Moon, Sunrise, Trophy, Users } from 'lucide-react'
+import { useTheme } from '../contexts/ThemeContext'
 import { container, item } from '../lib/motion-variants'
 
 interface Challenge {
@@ -26,6 +27,8 @@ const categoryConfig = {
 }
 
 export default function ChallengesPage() {
+  const { theme } = useTheme()
+  const isLight = theme === 'light'
   const [challenges, setChallenges] = useState<Challenge[]>([
     {
       id: 'fajr',
@@ -105,8 +108,8 @@ export default function ChallengesPage() {
     >
       {/* Header */}
       <motion.div variants={item}>
-        <h1 className="text-2xl font-bold text-cream-warm">Challenges</h1>
-        <p className="text-[13px] text-white/50 mt-0.5">Push your growth</p>
+        <h1 className={`text-2xl font-bold ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>Challenges</h1>
+        <p className={`text-[13px] mt-0.5 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>Push your growth</p>
       </motion.div>
 
       {/* Active Challenge Hero */}
@@ -114,24 +117,26 @@ export default function ChallengesPage() {
         variants={item}
         className="w-full h-[150px] rounded-3xl p-6 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(139, 92, 246, 0.2))',
-          border: '1px solid rgba(45, 212, 191, 0.2)',
+          background: isLight
+            ? 'linear-gradient(135deg, rgba(10, 126, 110, 0.08), rgba(232, 228, 244, 0.3))'
+            : 'linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(139, 92, 246, 0.2))',
+          border: isLight ? '1px solid rgba(10, 126, 110, 0.15)' : '1px solid rgba(45, 212, 191, 0.2)',
         }}
       >
         <div className="flex items-start justify-between h-full">
           <div className="flex flex-col justify-between h-full flex-1">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Sunrise className="w-4 h-4 text-emerald-glow" />
-                <span className="text-[13px] font-medium text-emerald-glow">Active Challenge</span>
+                <Sunrise className={`w-4 h-4 ${isLight ? 'text-teal-600' : 'text-emerald-glow'}`} />
+                <span className={`text-[13px] font-medium ${isLight ? 'text-teal-600' : 'text-emerald-glow'}`}>Active Challenge</span>
               </div>
-              <h2 className="text-[22px] font-semibold text-cream-warm">7-Day Fajr Reset</h2>
-              <p className="text-[13px] text-white/50 mt-1">Day 3 of 7</p>
+              <h2 className={`text-[22px] font-semibold ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>7-Day Fajr Reset</h2>
+              <p className={`text-[13px] mt-1 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>Day 3 of 7</p>
             </div>
             <div className="mt-3">
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className={`h-2 rounded-full overflow-hidden ${isLight ? 'bg-gray-100' : 'bg-white/10'}`}>
                 <motion.div
-                  className="h-full bg-emerald-glow rounded-full"
+                  className="h-full bg-primary rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${activePct}%` }}
                   transition={{ duration: 0.8 }}
@@ -147,7 +152,7 @@ export default function ChallengesPage() {
                 cy="24"
                 r="20"
                 fill="none"
-                stroke="rgba(255,255,255,0.1)"
+                stroke={isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.1)'}
                 strokeWidth="4"
               />
               <motion.circle
@@ -155,7 +160,7 @@ export default function ChallengesPage() {
                 cy="24"
                 r="20"
                 fill="none"
-                stroke="#2DD4BF"
+                stroke="var(--primary)"
                 strokeWidth="4"
                 strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 20}`}
@@ -169,7 +174,7 @@ export default function ChallengesPage() {
                 x="24"
                 y="26"
                 textAnchor="middle"
-                fill="#2DD4BF"
+                fill="var(--primary)"
                 fontSize="11"
                 fontWeight="600"
               >
@@ -189,8 +194,8 @@ export default function ChallengesPage() {
           return (
             <motion.div
               key={challenge.id}
-              className="min-h-[150px] rounded-3xl p-6 border border-white/10"
-              style={{ backgroundColor: '#182230' }}
+              className={`min-h-[150px] rounded-3xl p-6 border ${isLight ? 'bg-white border-gray-100 shadow-sm' : 'border-white/10'}`}
+              style={isLight ? undefined : { backgroundColor: '#182230' }}
               whileTap={{ scale: 0.98 }}
             >
               {/* Category Tag */}
@@ -207,26 +212,26 @@ export default function ChallengesPage() {
               </div>
 
               <div className="flex items-start gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${isLight ? 'bg-gray-50' : 'bg-white/5'}`}>
                   {challenge.icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-[16px] font-semibold text-cream-warm">{challenge.title}</h3>
-                  <p className="text-[13px] text-white/40 mt-0.5">{challenge.description}</p>
+                  <h3 className={`text-[16px] font-semibold ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>{challenge.title}</h3>
+                  <p className={`text-[13px] mt-0.5 ${isLight ? 'text-gray-400' : 'text-white/40'}`}>{challenge.description}</p>
                 </div>
               </div>
 
               {/* Participant Count */}
               <div className="flex items-center gap-1.5 mb-3">
-                <Users className="w-3.5 h-3.5 text-[#A1A1AA]" />
-                <span className="text-[13px] text-[#A1A1AA]">
+                <Users className={`w-3.5 h-3.5 ${isLight ? 'text-gray-400' : 'text-[#A1A1AA]'}`} />
+                <span className={`text-[13px] ${isLight ? 'text-gray-400' : 'text-[#A1A1AA]'}`}>
                   {challenge.participants.toLocaleString()} people joined
                 </span>
               </div>
 
               {/* Progress with Milestone Markers */}
               <div className="relative mb-3">
-                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                <div className={`h-2 rounded-full overflow-hidden ${isLight ? 'bg-gray-100' : 'bg-white/5'}`}>
                   <motion.div
                     className={`h-full rounded-full bg-gradient-to-r ${challenge.gradient}`}
                     initial={{ width: 0 }}
@@ -234,7 +239,7 @@ export default function ChallengesPage() {
                     transition={{ duration: 0.8, delay: 0.2 }}
                   />
                 </div>
-                {/* Milestone markers - 4 dots at 25%, 50%, 75%, 100% */}
+                {/* Milestone markers */}
                 <div className="absolute inset-0 flex items-center">
                   {[0.25, 0.5, 0.75, 1].map((milestone, mi) => (
                     <div
@@ -242,7 +247,7 @@ export default function ChallengesPage() {
                       className="absolute w-[6px] h-[6px] rounded-full -translate-x-1/2"
                       style={{
                         left: `${milestone * 100}%`,
-                        backgroundColor: pct >= milestone * 100 ? '#F4C95D' : 'rgba(255,255,255,0.2)',
+                        backgroundColor: pct >= milestone * 100 ? '#F4C95D' : isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.2)',
                       }}
                     />
                   ))}
@@ -251,7 +256,7 @@ export default function ChallengesPage() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[13px] text-white/50">
+                  <p className={`text-[13px] ${isLight ? 'text-gray-500' : 'text-white/50'}`}>
                     Day {challenge.progress}/{challenge.total}
                   </p>
                 </div>
@@ -260,8 +265,8 @@ export default function ChallengesPage() {
                   onClick={() => toggleJoin(challenge.id)}
                   className={`px-4 py-1.5 rounded-lg text-[13px] font-medium ${
                     challenge.joined
-                      ? 'bg-emerald-glow/20 text-emerald-glow'
-                      : 'bg-white/10 text-white/70'
+                      ? isLight ? 'bg-teal-50 text-teal-700' : 'bg-emerald-glow/20 text-emerald-glow'
+                      : isLight ? 'bg-gray-100 text-gray-600' : 'bg-white/10 text-white/70'
                   }`}
                 >
                   {challenge.joined ? 'Continue' : 'Join'}
@@ -269,9 +274,9 @@ export default function ChallengesPage() {
               </div>
 
               {/* Reward Preview */}
-              <div className="flex items-center gap-1.5 mt-3 pt-3 border-t border-white/5">
-                <Trophy className="w-3.5 h-3.5 text-[#A1A1AA]" />
-                <span className="text-[13px] text-[#A1A1AA]">
+              <div className={`flex items-center gap-1.5 mt-3 pt-3 border-t ${isLight ? 'border-gray-100' : 'border-white/5'}`}>
+                <Trophy className={`w-3.5 h-3.5 ${isLight ? 'text-gray-400' : 'text-[#A1A1AA]'}`} />
+                <span className={`text-[13px] ${isLight ? 'text-gray-400' : 'text-[#A1A1AA]'}`}>
                   Earn: {challenge.reward}
                 </span>
               </div>
@@ -283,14 +288,14 @@ export default function ChallengesPage() {
       {/* Completed Section */}
       <motion.div
         variants={item}
-        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 flex items-center gap-3"
+        className={`rounded-3xl p-5 flex items-center gap-3 ${isLight ? 'bg-white shadow-sm border border-gray-100' : 'bg-white/5 backdrop-blur-xl border border-white/10'}`}
       >
-        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isLight ? 'bg-amber-50' : 'bg-white/5'}`}>
           <Trophy className="w-5 h-5 text-gold-soft" />
         </div>
         <div>
-          <p className="text-[16px] font-medium text-cream-warm">3 Challenges Completed</p>
-          <p className="text-[13px] text-white/40">Keep the momentum going!</p>
+          <p className={`text-[16px] font-medium ${isLight ? 'text-gray-900' : 'text-cream-warm'}`}>3 Challenges Completed</p>
+          <p className={`text-[13px] ${isLight ? 'text-gray-400' : 'text-white/40'}`}>Keep the momentum going!</p>
         </div>
       </motion.div>
     </motion.div>
