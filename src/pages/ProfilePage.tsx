@@ -203,13 +203,6 @@ export default function ProfilePage() {
         <p className="text-xs text-white/20">Sakina v1.0.0</p>
       </motion.div>
 
-      {/* CSS animation for rotating avatar ring */}
-      <style>{`
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </motion.div>
   )
 }

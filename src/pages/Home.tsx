@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Lock, BookOpen } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
@@ -7,7 +8,6 @@ import NextActionCard from '../components/home/NextActionCard'
 import StreakWidget from '../components/home/StreakWidget'
 import DailyReflection from '../components/home/DailyReflection'
 import SpiritualInsight from '../components/home/SpiritualInsight'
-import AmbientBackground from '../components/shared/AmbientBackground'
 import { HomeSkeleton } from '../components/shared/Skeleton'
 import Celebration from '../components/shared/Celebration'
 
@@ -20,6 +20,7 @@ function getFormattedDate(): string {
 }
 
 export default function Home() {
+  const navigate = useNavigate()
   const { user, progress } = useAppContext()
   const dateStr = getFormattedDate()
   const [loading, setLoading] = useState(true)
@@ -63,9 +64,6 @@ export default function Home() {
             transition={{ duration: 0.3 }}
             className="relative pb-24 px-5 space-y-6"
           >
-            {/* Ambient Background */}
-            <AmbientBackground />
-
             {/* Header - 72px height area */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -99,9 +97,16 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="relative z-10 flex justify-center py-2"
+              className="relative z-10 flex flex-col items-center py-2"
             >
-              <ProgressRing />
+              <button
+                onClick={() => navigate('/prayer')}
+                className="flex flex-col items-center cursor-pointer"
+                aria-label="View prayers"
+              >
+                <ProgressRing />
+                <p className="text-xs text-white/50 mt-2">Tap to view prayers</p>
+              </button>
             </motion.div>
 
             {/* Next Action Card */}
