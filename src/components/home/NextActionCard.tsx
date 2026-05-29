@@ -52,26 +52,53 @@ export default function NextActionCard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
       whileTap={{ scale: 0.98 }}
-      className="relative overflow-hidden rounded-2xl p-5 border border-emerald-glow/30 bg-white/5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+      className="relative overflow-hidden rounded-3xl border border-primary/30 bg-white/5 backdrop-blur-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+      style={{ minHeight: '180px' }}
     >
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-glow/5 to-transparent pointer-events-none" />
+      {/* Animated pulsing border overlay */}
+      <motion.div
+        className="absolute inset-0 rounded-3xl pointer-events-none"
+        style={{
+          background: 'linear-gradient(135deg, rgba(45,212,191,0.3), rgba(139,92,246,0.2), rgba(45,212,191,0.3))',
+          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          maskComposite: 'exclude',
+          WebkitMaskComposite: 'xor',
+          padding: '1px',
+          borderRadius: '24px',
+        }}
+        animate={{ opacity: [0.4, 1, 0.4] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-      <div className="relative flex items-center gap-4">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-emerald-glow/10 flex items-center justify-center">
-          <Icon size={24} className="text-emerald-glow" />
+      {/* Shimmer sweep effect */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%)',
+          borderRadius: '24px',
+        }}
+        animate={{ x: ['-100%', '200%'] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', repeatDelay: 2 }}
+      />
+
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none rounded-3xl" />
+
+      <div className="relative flex items-center gap-4 p-5 h-full" style={{ minHeight: '180px' }}>
+        <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+          <Icon size={28} className="text-primary" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-cream-warm">{title}</h3>
-          <p className="text-sm text-white/60 mt-0.5">{subtitle}</p>
+          <h3 className="text-xl font-semibold text-white">{title}</h3>
+          <p className="text-sm text-white/60 mt-1">{subtitle}</p>
         </div>
 
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.02 }}
           onClick={handleAction}
-          className="flex-shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl bg-emerald-glow/20 text-emerald-glow text-sm font-medium transition-colors hover:bg-emerald-glow/30"
+          className="flex-shrink-0 flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-primary/20 text-primary text-sm font-medium transition-colors hover:bg-primary/30"
         >
           {action}
           <ChevronRight size={16} />

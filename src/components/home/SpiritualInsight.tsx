@@ -33,23 +33,29 @@ export default function SpiritualInsight() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.9 }}
-      className="rounded-2xl p-5 bg-white/5 backdrop-blur-xl border border-gold-soft/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+      className="rounded-2xl p-5 bg-card backdrop-blur-xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+      style={{ minHeight: '120px' }}
     >
-      {/* AI Coach label */}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-6 h-6 rounded-lg bg-gold-soft/10 flex items-center justify-center">
-          <Sparkles size={14} className="text-gold-soft" />
+      {/* Daily Wisdom label */}
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-6 h-6 rounded-lg bg-gold/10 flex items-center justify-center">
+          <Sparkles size={14} className="text-gold" />
         </div>
-        <span className="text-xs font-medium text-gold-soft/80 uppercase tracking-wider">AI Coach</span>
+        <span className="text-xs font-medium text-gold/80 uppercase tracking-wider">Daily Wisdom</span>
       </div>
 
+      {/* Decorative Bismillah */}
+      <p className="font-arabic text-white/40 text-xs mb-2" style={{ fontFamily: "'Amiri', serif" }}>
+        بِسْمِ اللَّهِ
+      </p>
+
       {/* Typewriter text */}
-      <p className="text-sm text-white/80 leading-relaxed min-h-[2.5rem]">
+      <p className="text-base text-white/80 leading-relaxed min-h-[2.5rem]">
         {displayedText}
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ duration: 0.5, repeat: Infinity }}
-          className="inline-block w-0.5 h-4 bg-gold-soft/60 ml-0.5 align-middle"
+          className="inline-block w-0.5 h-4 bg-gold/60 ml-0.5 align-middle"
         />
       </p>
     </motion.div>

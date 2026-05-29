@@ -23,18 +23,20 @@ export default function DailyReflection() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.7 }}
-      className="rounded-2xl p-5 bg-white/5 backdrop-blur-xl border border-gold-soft/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+      className="rounded-3xl p-5 bg-white/5 backdrop-blur-xl border border-gold/20 border-l-4 border-l-gold shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
     >
       {/* Header */}
       <button
         onClick={() => !saved && setExpanded(!expanded)}
         className="w-full flex items-center gap-3 text-left"
       >
-        <div className="w-10 h-10 rounded-xl bg-gold-soft/10 flex items-center justify-center flex-shrink-0">
-          <Heart size={20} className="text-gold-soft" />
+        <div className="relative w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+          {/* Warm glow behind icon */}
+          <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 20px rgba(244, 201, 93, 0.3)' }} />
+          <Heart size={20} className="text-gold relative z-10" />
         </div>
         <div className="flex-1">
-          <h3 className="text-base font-medium text-cream-warm">
+          <h3 className="text-base font-medium text-white">
             {progress.reflection.done ? 'Reflection complete' : 'What are you grateful for today?'}
           </h3>
           <p className="text-xs text-white/50 mt-0.5">Daily reflection</p>
@@ -58,7 +60,7 @@ export default function DailyReflection() {
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="Write your reflection..."
-                    className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-cream-warm placeholder:text-white/30 resize-none focus:outline-none focus:border-gold-soft/40 transition-colors"
+                    className="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white placeholder:text-white/30 resize-none focus:outline-none focus:border-gold/40 transition-colors"
                   />
                   <AnimatePresence>
                     {text.trim() && (
@@ -68,7 +70,7 @@ export default function DailyReflection() {
                         exit={{ opacity: 0, y: 10 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleSave}
-                        className="mt-3 px-4 py-2 rounded-xl bg-gold-soft/20 text-gold-soft text-sm font-medium transition-colors hover:bg-gold-soft/30"
+                        className="mt-3 px-4 py-2 rounded-xl bg-gold/20 text-gold text-sm font-medium transition-colors hover:bg-gold/30"
                       >
                         Save Reflection
                       </motion.button>
@@ -84,11 +86,11 @@ export default function DailyReflection() {
                   <motion.div
                     animate={{ scale: [1, 1.2, 1] }}
                     transition={{ duration: 0.5 }}
-                    className="w-8 h-8 rounded-full bg-emerald-glow/20 flex items-center justify-center"
+                    className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center"
                   >
-                    <Check size={16} className="text-emerald-glow" />
+                    <Check size={16} className="text-primary" />
                   </motion.div>
-                  <span className="text-sm text-emerald-glow font-medium">Saved!</span>
+                  <span className="text-sm text-primary font-medium">Saved!</span>
                 </motion.div>
               )}
             </div>
