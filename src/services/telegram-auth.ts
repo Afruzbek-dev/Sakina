@@ -26,8 +26,13 @@ export async function validateTelegramAuth(_initData: string): Promise<TelegramA
     return { valid: false, user: {} as TelegramUser, profile: null }
   }
 
-  const stored = localStorage.getItem(`sakina-tg-profile-${user.id}`)
-  const profile = stored ? JSON.parse(stored) : null
+  let profile = null
+  try {
+    const stored = localStorage.getItem(`sakina-tg-profile-${user.id}`)
+    profile = stored ? JSON.parse(stored) : null
+  } catch {
+    // Ignore corrupt localStorage data
+  }
 
   return {
     valid: true,

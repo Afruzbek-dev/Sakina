@@ -54,7 +54,8 @@ function AppRoutes() {
     )
   }
 
-  if (!user.onboardingComplete) {
+  // If Telegram user completed TG onboarding, skip generic onboarding
+  if (!user.onboardingComplete && !(telegramUser && tgOnboardingComplete)) {
     return (
       <Routes>
         <Route path="/onboarding" element={<OnboardingLayout />}>

@@ -44,6 +44,8 @@ export default function TgStep2Goals() {
       onboarding_completed: true,
     })
 
+    localStorage.removeItem('sakina-tg-onboarding-city')
+
     completeTgOnboarding()
     navigate('/')
   }

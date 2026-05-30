@@ -67,16 +67,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const authenticateWithTelegram = useCallback(() => {
     const initData = window.Telegram?.WebApp?.initData ?? ''
-    validateTelegramAuth(initData).then((result) => {
-      if (result.valid) {
-        setState((prev) => ({
-          ...prev,
-          isAuthenticated: true,
-          telegramUser: result.user,
-          tgOnboardingComplete: result.profile?.onboarding_completed ?? false,
-        }))
-      }
-    })
+    validateTelegramAuth(initData)
+      .then((result) => {
+        if (result.valid) {
+          setState((prev) => ({
+            ...prev,
+            isAuthenticated: true,
+            telegramUser: result.user,
+            tgOnboardingComplete: result.profile?.onboarding_completed ?? false,
+          }))
+        }
+      })
+      .catch(() => {
+        // Fall back to default state so the app can still function
+        setState(defaultState)
+      })
   }, [])
 
   const completeTgOnboarding = useCallback(() => {
