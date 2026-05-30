@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { isTelegramWebApp } from '../lib/telegram'
+import { validateTelegramAuth, type TelegramUser } from '../services/telegram-auth'
 
 const STORAGE_KEY = 'sakina-auth'
 
@@ -6,24 +8,32 @@ interface AuthState {
   isAuthenticated: boolean
   email: string
   isGuest: boolean
+  telegramUser: TelegramUser | null
+  tgOnboardingComplete: boolean
 }
 
 interface AuthContextType {
   isAuthenticated: boolean
   email: string
   isGuest: boolean
+  telegramUser: TelegramUser | null
+  tgOnboardingComplete: boolean
   signInWithMagicLink: (email: string) => void
   verifyMagicLink: () => void
   signInWithGoogle: () => void
   signInWithApple: () => void
   continueAsGuest: () => void
   signOut: () => void
+  authenticateWithTelegram: () => void
+  completeTgOnboarding: () => void
 }
 
 const defaultState: AuthState = {
   isAuthenticated: false,
   email: '',
   isGuest: false,
+  telegramUser: null,
+  tgOnboardingComplete: false,
 }
 
 function loadAuth(): AuthState {
@@ -54,6 +64,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveAuth(state)
   }, [state])
+
+  const authenticateWithTelegram = useCallback(() => {
+    const initData = window.Telegram?.WebApp?.initData ?? ''
+    validateTelegramAuth(initData)
+      .then((result) => {
+        if (result.valid) {
+          setState((prev) => ({
+            ...prev,
+            isAuthenticated: true,
+            telegramUser: result.user,
+            tgOnboardingComplete: result.profile?.onboarding_completed ?? false,
+          }))
+        }
+      })
+      .catch(() => {
+        // Fall back to default state so the app can still function
+        setState(defaultState)
+      })
+  }, [])
+
+  const completeTgOnboarding = useCallback(() => {
+    setState((prev) => ({ ...prev, tgOnboardingComplete: true }))
+  }, [])
+
+  useEffect(() => {
+    if (isTelegramWebApp()) {
+      authenticateWithTelegram()
+    }
+  }, [authenticateWithTelegram])
 
   const signInWithMagicLink = useCallback((email: string) => {
     setState((prev) => ({ ...prev, email }))
@@ -87,12 +126,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: state.isAuthenticated,
         email: state.email,
         isGuest: state.isGuest,
+        telegramUser: state.telegramUser,
+        tgOnboardingComplete: state.tgOnboardingComplete,
         signInWithMagicLink,
         verifyMagicLink,
         signInWithGoogle,
         signInWithApple,
         continueAsGuest,
         signOut,
+        authenticateWithTelegram,
+        completeTgOnboarding,
       }}
     >
       {children}

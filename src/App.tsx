@@ -10,6 +10,9 @@ import OnboardingStep1 from './pages/onboarding/Step1'
 import OnboardingStep2 from './pages/onboarding/Step2'
 import OnboardingStep3 from './pages/onboarding/Step3'
 import OnboardingStep4 from './pages/onboarding/Step4'
+import TgOnboardingLayout from './pages/telegram-onboarding/TgOnboardingLayout'
+import TgStep1Location from './pages/telegram-onboarding/TgStep1Location'
+import TgStep2Goals from './pages/telegram-onboarding/TgStep2Goals'
 import WelcomePage from './pages/auth/WelcomePage'
 import SignInPage from './pages/auth/SignInPage'
 import MagicLinkSentPage from './pages/auth/MagicLinkSentPage'
@@ -24,8 +27,21 @@ import ProfilePage from './pages/ProfilePage'
 import PremiumPage from './pages/PremiumPage'
 
 function AppRoutes() {
-  const { isAuthenticated, isGuest } = useAuth()
+  const { isAuthenticated, isGuest, telegramUser, tgOnboardingComplete } = useAuth()
   const { user } = useAppContext()
+
+  // Telegram user needs TG-specific onboarding
+  if (telegramUser && isAuthenticated && !tgOnboardingComplete) {
+    return (
+      <Routes>
+        <Route path="/tg-onboarding" element={<TgOnboardingLayout />}>
+          <Route index element={<TgStep1Location />} />
+          <Route path="goals" element={<TgStep2Goals />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/tg-onboarding" replace />} />
+      </Routes>
+    )
+  }
 
   if (!isAuthenticated && !isGuest) {
     return (
@@ -38,7 +54,8 @@ function AppRoutes() {
     )
   }
 
-  if (!user.onboardingComplete) {
+  // If Telegram user completed TG onboarding, skip generic onboarding
+  if (!user.onboardingComplete && !(telegramUser && tgOnboardingComplete)) {
     return (
       <Routes>
         <Route path="/onboarding" element={<OnboardingLayout />}>

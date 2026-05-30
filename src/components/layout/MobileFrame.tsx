@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import AmbientBackground from '../shared/AmbientBackground'
 import { useTheme } from '../../contexts/ThemeContext'
+import { isTelegramWebApp, expandApp, setHeaderColor } from '../../lib/telegram'
 
 interface MobileFrameProps {
   children: ReactNode
@@ -9,6 +10,13 @@ interface MobileFrameProps {
 export default function MobileFrame({ children }: MobileFrameProps) {
   const { theme } = useTheme()
   const isLight = theme === 'light'
+
+  useEffect(() => {
+    if (isTelegramWebApp()) {
+      expandApp()
+      setHeaderColor('#0A7E6E')
+    }
+  }, [])
 
   return (
     <div className={`flex items-center justify-center min-h-dvh p-4 ${isLight ? 'bg-neutral-100' : 'bg-neutral-900'}`}>
