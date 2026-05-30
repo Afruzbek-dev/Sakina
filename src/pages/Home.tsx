@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Lock, BookOpen } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
+import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
 import ProgressRing from '../components/home/ProgressRing'
 import NextActionCard from '../components/home/NextActionCard'
@@ -23,6 +24,7 @@ function getFormattedDate(): string {
 export default function Home() {
   const navigate = useNavigate()
   const { user, progress } = useAppContext()
+  const { telegramUser } = useAuth()
   const { theme } = useTheme()
   const isLight = theme === 'light'
   const dateStr = getFormattedDate()
@@ -46,7 +48,8 @@ export default function Home() {
   }, [isComplete, loading])
 
   // User initial for avatar
-  const userInitial = (user.name || 'S').charAt(0).toUpperCase()
+  const displayName = telegramUser?.first_name || user.name || 'friend'
+  const userInitial = displayName.charAt(0).toUpperCase()
 
   return (
     <>
@@ -77,22 +80,31 @@ export default function Home() {
             >
               <div>
                 <h1 className={`font-bold ${isLight ? 'text-gray-900' : 'text-white'}`} style={{ fontSize: '24px' }}>
-                  Assalamu Alaikum, {user.name || 'friend'}
+                  Assalamu Alaikum, {displayName}
                 </h1>
                 <p className={`text-sm mt-1 ${isLight ? 'text-gray-500' : 'text-white/50'}`}>{dateStr}</p>
               </div>
 
               {/* Avatar circle */}
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  background: 'linear-gradient(135deg, #2DD4BF, #8B5CF6)',
-                }}
-              >
-                {userInitial}
-              </div>
+              {telegramUser?.photo_url ? (
+                <img
+                  src={telegramUser.photo_url}
+                  alt={displayName}
+                  className="w-12 h-12 rounded-full object-cover"
+                  style={{ width: '48px', height: '48px' }}
+                />
+              ) : (
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    background: 'linear-gradient(135deg, #2DD4BF, #8B5CF6)',
+                  }}
+                >
+                  {userInitial}
+                </div>
+              )}
             </motion.div>
 
             {/* Progress Ring - hero element */}

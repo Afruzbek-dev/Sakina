@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Sun, BookOpen, Moon, Sunrise, Trophy, Users } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
 import { container, item } from '../lib/motion-variants'
+import { isTelegramWebApp, haptic } from '../lib/telegram'
 
 interface Challenge {
   id: string
@@ -89,6 +90,7 @@ export default function ChallengesPage() {
   ])
 
   function toggleJoin(id: string) {
+    if (isTelegramWebApp()) haptic.impact('light')
     setChallenges((prev) =>
       prev.map((c) => (c.id === id ? { ...c, joined: !c.joined } : c))
     )

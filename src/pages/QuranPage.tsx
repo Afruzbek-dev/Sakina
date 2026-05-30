@@ -4,6 +4,7 @@ import { Flame, BookOpen, ChevronRight } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
 import { useTheme } from '../contexts/ThemeContext'
 import { container, item } from '../lib/motion-variants'
+import { isTelegramWebApp, haptic } from '../lib/telegram'
 
 const weeklyReading = [8, 12, 5, 10, 7, 15, 6]
 const juzCompleted = [
@@ -29,6 +30,7 @@ export default function QuranPage() {
     const newVerses = Math.min(versesToday + 5, target)
     updateProgress('quran', { versesRead: newVerses })
     if (newVerses >= target) {
+      if (isTelegramWebApp()) haptic.notification('success')
       setShowCelebration(true)
       setTimeout(() => setShowCelebration(false), 2500)
     }

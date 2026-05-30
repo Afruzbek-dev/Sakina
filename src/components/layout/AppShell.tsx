@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Home, BookOpen, Sparkles, Trophy, User } from 'lucide-react'
 import PageTransition from './PageTransition'
 import { useTheme } from '../../contexts/ThemeContext'
+import { isTelegramWebApp, haptic } from '../../lib/telegram'
 
 const tabs = [
   { path: '/', icon: Home, label: 'Home' },
@@ -40,7 +41,7 @@ export default function AppShell() {
             return (
               <motion.button
                 key={tab.path}
-                onClick={() => navigate(tab.path)}
+                onClick={() => { if (isTelegramWebApp()) haptic.selection(); navigate(tab.path) }}
                 whileTap={{ scale: 0.85, transition: { type: 'spring', stiffness: 400, damping: 15 } }}
                 role="tab"
                 aria-selected={isActive}

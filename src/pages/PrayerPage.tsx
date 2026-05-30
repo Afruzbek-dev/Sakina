@@ -4,6 +4,7 @@ import { Check, Clock, X } from 'lucide-react'
 import { useAppContext } from '../contexts/AppContext'
 import { useTheme } from '../contexts/ThemeContext'
 import { container, item } from '../lib/motion-variants'
+import { isTelegramWebApp, haptic } from '../lib/telegram'
 
 interface PrayerData {
   name: string
@@ -85,6 +86,7 @@ export default function PrayerPage() {
 
   function markComplete(idx: number) {
     if (prayers[idx].completed) return
+    if (isTelegramWebApp()) haptic.impact('medium')
     setRatingPrayer(idx)
   }
 
